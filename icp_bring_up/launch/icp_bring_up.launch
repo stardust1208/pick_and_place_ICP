@@ -1,0 +1,43 @@
+<launch>
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="filters" value="pointcloud"/>
+  </include>
+  <include file="$(find interbotix_xsarm_control)/launch/xsarm_control.launch">
+    <arg name="robot_model" value="rx150"/>
+  </include>
+  <node
+    pkg="pointcloud_converter"
+    type="lower_pub_rate"
+    name="lower_pub_rate"
+    output="screen"
+  />
+  <node
+    pkg="pointcloud_converter"
+    type="pre_pointcloud"
+    name="pre_pointcloud"
+    output="screen"
+  />
+  <node
+    pkg="pointcloud_converter"
+    type="segment_pointcloud"
+    name="segment_pointcloud"
+    output="screen"
+  />
+  <node
+    pkg="pose_estimation"
+    type="object_pose2Camera.py"
+    name="object_pose2Camera"
+    output="screen"
+  />
+  <node
+    pkg="pose_estimation"
+    type="camera_tf_broadcast.py"
+    name="camera_tf_broadcast"
+  />
+  <node
+    pkg="pose_estimation"
+    type="convert_point2BaseLink.py"
+    name="convert_point2BaseLink"
+    output="screen"
+  />
+</launch>
